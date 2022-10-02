@@ -1,0 +1,66 @@
+// create a list of found mbps connection speeds
+var callList = [8.2, 9.8, 6.2,];
+var walkList = [15.3, 20.7, 17.1];
+
+// Once the user is ready, click the button to begin the process and continue to various screens as they click additional buttons
+onEvent("startButton", "click", function ( ) {
+  setScreen("locationOptionScreen");
+});
+onEvent("buttonDC", "click", function( ) {
+  setScreen("cityDC");
+});
+onEvent("buttonChickDC", "click", function( ) {
+  setScreen("loadingScreen");
+  timer();
+  connectionSpeed();
+});
+onEvent("restartButton", "click", function( ) {
+  setScreen("locationOptionScreen");
+});
+
+
+// count down to give the network connection time
+function timer() {
+  // hide one of the images before timer starts
+  hideElement("wifiOne");
+  
+  // create a variable to begin countdown
+  var timeLeft = 6;
+  
+  // create a timed loop, counting in increments of 1 second
+  timedLoop(1000, function() {
+    
+    // decrease the timeLeft by 1 second as a countdown
+    timeLeft = timeLeft - 1;
+
+    // track the timer in the console log and display it to the user
+    setText("setTextRelay", "Please wait for " + timeLeft + " seconds.");
+    console.log("Time Left: " + timeLeft);
+    
+    // Switch between the images every second to create a blinker effect
+    if (timeLeft % 2 == 0){
+      hideElement("wifiTwo");
+      showElement("wifiOne");
+    } else {
+      hideElement("wifiOne");
+      showElement("wifiTwo");
+    }
+    
+    // once the time is up, move to the screen for the loaded connection speeds
+    if (timeLeft == 0) {
+      stopTimedLoop();
+      setScreen("waitTimes");
+    }
+  });
+}
+
+// take from the list of mbps connection speeds and display them on the result screen
+function connectionSpeed(){
+  // create variables to take a float from the list
+  var call = randomNumber(0, callList.length - 1);
+  var walk = randomNumber(0, walkList.length - 1);
+  
+  // display the float to the label on the results page
+  setText("minutesCall", callList[call]);
+  setText("minutesWalk", walkList[walk]);
+}
